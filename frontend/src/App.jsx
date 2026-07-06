@@ -32,12 +32,6 @@ export default function App() {
         <button className="dash-brand" type="button" onClick={() => navigate("/")}>
           Haul Sheet
         </button>
-        <div className="dash-header-actions">
-          <span className="dash-pill">FMCSA / 49 CFR Part 395</span>
-          <button className="dash-home-btn" type="button" onClick={() => navigate("/")}>
-            Home
-          </button>
-        </div>
       </header>
 
       <div className="app-shell">
@@ -46,18 +40,50 @@ export default function App() {
         <main className="main">
           {!result && (
             <div className="main-empty">
-              <p className="main-empty-eyebrow">Trip planner</p>
-              <h1>
-                Plan the haul.
-                <br />
-                Draw the log.
-              </h1>
-              <p>
-                Enter your current location, pickup, drop-off, and hours already used in your
-                70-hour/8-day cycle. Haul Sheet routes the trip, works out every required break,
-                fuel stop, and rest period under 49 CFR Part 395, and draws the daily log sheets
-                for you - the same grid an inspector would check.
-              </p>
+              <div className="workspace-board" aria-label="Trip planning workspace">
+                <div className="workspace-topline">
+                  <span>Route workspace</span>
+                  <span>Waiting for trip details</span>
+                </div>
+
+                <div className="route-canvas" aria-hidden="true">
+                  <svg viewBox="0 0 760 300" role="presentation">
+                    <path className="canvas-road-soft" d="M58 220 C172 80 282 88 382 158 S588 274 704 82" />
+                    <path className="canvas-road" d="M58 220 C172 80 282 88 382 158 S588 274 704 82" />
+                    <circle className="canvas-pin canvas-pin-a" cx="58" cy="220" r="9" />
+                    <circle className="canvas-pin canvas-pin-b" cx="382" cy="158" r="9" />
+                    <circle className="canvas-pin canvas-pin-c" cx="704" cy="82" r="9" />
+                  </svg>
+                  <div className="route-canvas-label route-canvas-label-a">Current</div>
+                  <div className="route-canvas-label route-canvas-label-b">Pickup</div>
+                  <div className="route-canvas-label route-canvas-label-c">Drop-off</div>
+                </div>
+
+                <div className="workspace-grid">
+                  <section className="workspace-card">
+                    <div className="workspace-card-title">Schedule preview</div>
+                    <div className="schedule-lines">
+                      <span />
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                  </section>
+                  <section className="workspace-card">
+                    <div className="workspace-card-title">Log sheet preview</div>
+                    <div className="mini-log-grid">
+                      <span />
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                  </section>
+                  <section className="workspace-card workspace-card-accent">
+                    <div className="workspace-card-title">Next step</div>
+                    <p>Fill the route fields to generate stops, map, and daily logs.</p>
+                  </section>
+                </div>
+              </div>
             </div>
           )}
 

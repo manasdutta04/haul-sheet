@@ -123,25 +123,7 @@ export default function TripForm({ onSubmit, loading, error }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-glow" aria-hidden="true" />
-      <div className="brand">
-        <svg className="brand-mark" viewBox="0 0 34 34" fill="none">
-          <rect width="34" height="34" rx="7" fill="#f2b705" />
-          <path d="M6 22V12h9l4 4v6H6Z" stroke="#16130a" strokeWidth="1.6" strokeLinejoin="round" />
-          <circle cx="12" cy="23" r="2.2" fill="#16130a" />
-          <circle cx="22" cy="23" r="2.2" fill="#16130a" />
-          <path d="M15 12v-3h5l3 5" stroke="#16130a" strokeWidth="1.6" strokeLinejoin="round" />
-        </svg>
-        <div>
-          <div className="brand-title">Haul&nbsp;Sheet</div>
-          <div className="brand-subtitle">TRIP &amp; ELD LOG PLANNER</div>
-        </div>
-      </div>
-
-      <div className="sidebar-note">
-        Build with city names, ZIPs, airports, or landmarks. Pick a suggestion in pickup and drop-off to keep geocoding clean.
-      </div>
-
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+      <form onSubmit={handleSubmit} className="trip-form">
         {renderAutocomplete("current_location", "Current location", "e.g. Denver, CO")}
 
         {renderAutocomplete(
