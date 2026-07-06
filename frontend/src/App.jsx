@@ -25,6 +25,7 @@ export default function App() {
   }
 
   return (
+    <div className="app-shell-page">
     <div className="app-shell">
       <TripForm onSubmit={handleSubmit} loading={loading} error={error} />
 
@@ -91,6 +92,7 @@ export default function App() {
           </>
         )}
       </main>
+    </div>
     </div>
   );
 }

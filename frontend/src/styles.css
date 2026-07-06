@@ -29,12 +29,19 @@
   box-sizing: border-box;
 }
 
-html, body, #root {
-  height: 100%;
+html, body {
   margin: 0;
+  padding: 0;
 }
 
-body {
+/* #root must NOT have height:100% on the landing page — it would create a scroll
+   container that breaks position:sticky. The app-shell-page handles its own height. */
+#root {
+  min-height: 100vh;
+}
+
+/* Dark theme applied only inside .app-shell (the /dash route) */
+.app-shell-page {
   background:
     radial-gradient(circle at top left, rgba(255, 191, 61, 0.16), transparent 30%),
     radial-gradient(circle at 85% 10%, rgba(118, 168, 255, 0.14), transparent 28%),
@@ -51,6 +58,7 @@ body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
+  height: 100dvh;
 }
 
 a {
@@ -550,8 +558,9 @@ footer.credits {
 }
 
 @media (max-width: 900px) {
-  body {
+  .app-shell-page {
     overflow: auto;
+    height: auto;
   }
 
   .sidebar {
