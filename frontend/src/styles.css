@@ -86,6 +86,8 @@ button {
   top: 0;
   height: 100dvh;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
   background:
     linear-gradient(180deg, rgba(17, 21, 28, 0.98), rgba(15, 18, 24, 0.98)),
     radial-gradient(circle at top, rgba(255, 191, 61, 0.16), transparent 42%);
@@ -292,6 +294,8 @@ input::placeholder {
   min-width: 0;
   min-height: 0;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
   padding: 28px 28px 60px;
 }
 
@@ -518,6 +522,31 @@ footer.credits {
 
 @media (prefers-reduced-motion: reduce) {
   .spinner { animation: none; }
+}
+
+.sidebar::-webkit-scrollbar,
+.main::-webkit-scrollbar {
+  width: 10px;
+}
+
+.sidebar::-webkit-scrollbar-track,
+.main::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb,
+.main::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover,
+.main::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.24);
+  border: 3px solid transparent;
+  background-clip: content-box;
 }
 
 @media (max-width: 900px) {

@@ -147,15 +147,13 @@ export default function TripForm({ onSubmit, loading, error }) {
         {renderAutocomplete(
           "pickup_location",
           "Pickup location",
-          "Start typing a place name",
-          "Use a clear place name here. Suggestions appear as you type."
+          "Start typing a place name"
         )}
 
         {renderAutocomplete(
           "dropoff_location",
           "Drop-off location",
-          "Start typing a place name",
-          "If multiple matches appear, pick the most specific place name you see."
+          "Start typing a place name"
         )}
 
         <div className="field-group">
