@@ -412,92 +412,26 @@ function SideNav({ active }) {
 function HeroVisual() {
   return (
     <div className="lp-hero-visual" aria-hidden="true" role="presentation">
-      <div className="lp-hero-visual-inner" style={{ padding: "12px", background: "rgba(10,10,10,0.95)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "24px", boxShadow: "0 24px 48px -12px rgba(0,0,0,0.5)" }}>
-        <div className="lp-hero-visual-map" style={{ height: "260px", background: "#0c1015", borderRadius: "16px", overflow: "hidden", position: "relative" }}>
-          <div className="lp-fp-map-grid" />
-          
-          {/* HUD Telemetry Overlays */}
-          <div style={{ position: "absolute", top: "10px", left: "10px", fontFamily: "monospace", fontSize: "10px", color: "rgba(255,255,255,0.4)" }}>
-            SYS: ELD_ACTIVE // GPS_LOC: 41.8781° N
-          </div>
-          <div style={{ position: "absolute", top: "10px", right: "10px", fontFamily: "monospace", fontSize: "10px", color: "#4fd0a0" }}>
-            ● ONLINE
-          </div>
-
-          <svg
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-            viewBox="0 0 300 260"
-            fill="none"
-          >
-            {/* Background US state line abstractions */}
-            <path d="M20 50 Q 80 30, 130 90 T 260 120" stroke="rgba(255,255,255,0.02)" strokeWidth="4" />
-            <path d="M50 180 Q 120 140, 180 210 T 280 170" stroke="rgba(255,255,255,0.02)" strokeWidth="3" />
-
-            {/* Glowing active route path */}
-            <path
-              d="M70 70 C 100 110, 190 140, 230 190"
-              stroke="rgba(118,168,255,0.18)"
-              strokeWidth="8"
-              strokeLinecap="round"
-            />
-            <path
-              d="M70 70 C 100 110, 190 140, 230 190"
-              stroke="rgba(118,168,255,0.3)"
-              strokeWidth="4"
-              strokeLinecap="round"
-            />
-            <path
-              className="lp-route-dash"
-              d="M70 70 C 100 110, 190 140, 230 190"
-              stroke="#76a8ff"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeDasharray="6 4"
-            />
-
-            {/* Animated origin ping */}
-            <circle cx="70" cy="70" r="5" fill="#ffbf3d" />
-            <circle cx="70" cy="70" r="9" stroke="#ffbf3d" strokeWidth="1" opacity="0.4" className="lp-ping-anim" />
-
-            {/* Intermediate Break Stop */}
-            <circle cx="130" cy="115" r="4" fill="#9d7cff" />
-            <circle cx="130" cy="115" r="7" stroke="#9d7cff" strokeWidth="0.75" opacity="0.3" />
-
-            {/* Intermediate Fuel Stop */}
-            <circle cx="180" cy="140" r="4" fill="#4fd0a0" />
-            <circle cx="180" cy="140" r="7" stroke="#4fd0a0" strokeWidth="0.75" opacity="0.3" />
-
-            {/* Destination ping */}
-            <circle cx="230" cy="190" r="5" fill="#ff6d5f" />
-            <circle cx="230" cy="190" r="9" stroke="#ff6d5f" strokeWidth="1" opacity="0.4" className="lp-ping-anim" />
-          </svg>
-
-          {/* Location details overlay tags */}
-          <div style={{
-            position: "absolute", top: "50px", left: "45px",
-            background: "rgba(12,16,22,0.9)", border: "1px solid rgba(255,191,61,0.3)",
-            padding: "2px 6px", borderRadius: "4px", fontSize: "9px", fontFamily: "monospace", color: "#ffbf3d"
-          }}>
-            ORD (CHI)
-          </div>
-          <div style={{
-            position: "absolute", bottom: "75px", right: "65px",
-            background: "rgba(12,16,22,0.9)", border: "1px solid rgba(255,109,95,0.3)",
-            padding: "2px 6px", borderRadius: "4px", fontSize: "9px", fontFamily: "monospace", color: "#ff6d5f"
-          }}>
-            LAX (LA)
-          </div>
-        </div>
-        
-        {/* Bottom status stats bar */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "10px", padding: "0 4px" }}>
-          <div style={{ fontSize: "11px", color: "#b0b7c3", fontFamily: "monospace" }}>
-            ROUTE ACTIVE
-          </div>
-          <div style={{ fontSize: "11px", color: "#ffbf3d", fontFamily: "monospace", fontWeight: "bold" }}>
-            1,812 MI · 3 LOGS
-          </div>
-        </div>
+      <div
+        style={{
+          width: "480px",
+          height: "480px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "hidden"
+        }}
+      >
+        <img
+          src="/sunflower.jpg"
+          alt="Sunflower logo"
+          style={{
+            width: "420px",
+            height: "420px",
+            objectFit: "contain",
+            borderRadius: "60px"
+          }}
+        />
       </div>
     </div>
   );
@@ -513,13 +447,12 @@ function BandRoutePlanner() {
           One form. Haul Sheet routes the trip, works out every break, fuel stop, and rest period — then draws the log sheets.
         </p>
       </div>
-      <div className="lp-band-image-wrap">
-        <div className="lp-band-bg-road" />
-        <div className="lp-band-pixels" />
-        <div className="lp-band-stars" />
-        <div className="lp-band-road" />
-        <div className="lp-band-road-line" />
-        <div className="lp-band-mountains" />
+      <div className="lp-band-image-wrap" style={{ position: "relative", height: "300px" }}>
+        <img
+          src="/pixel-landscape.jpg"
+          alt="Pixel art landscape showing hills and a lake"
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
         {/* Glass prompt card */}
         <div className="lp-glass-card" style={{ justifyContent: "center" }}>
           <div className="lp-prompt-bar">
@@ -549,11 +482,12 @@ function BandCompliance() {
           Complete the trip form. Haul Sheet writes the HOS-compliant schedule. Your log is ready for inspection.
         </p>
       </div>
-      <div className="lp-band-image-wrap">
-        <div className="lp-band-bg-sunset" />
-        <div className="lp-band-pixels" />
-        <div className="lp-band-stars" />
-        <div className="lp-band-poppies" />
+      <div className="lp-band-image-wrap" style={{ position: "relative", height: "300px" }}>
+        <img
+          src="/pixel-meadow.jpg"
+          alt="Pixel art meadow with flowers"
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
         {/* Glass compliance card */}
         <div className="lp-glass-card">
           <div className="lp-glass-card-inner">

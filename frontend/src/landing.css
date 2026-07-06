@@ -325,11 +325,9 @@
   .lp-hero-visual {
     display: block;
     position: relative;
-    width: 340px;
-    height: 340px;
-    border-radius: 20px;
-    overflow: hidden;
-    background: #0a0a0a;
+    width: 480px;
+    height: 480px;
+    background: transparent;
     flex-shrink: 0;
   }
 }
