@@ -11,6 +11,6 @@ services:
       - key: DJANGO_SECRET_KEY
         generateValue: true
       - key: DJANGO_ALLOWED_HOSTS
-        value: ".onrender.com"
+        value: "haul-sheet.onrender.com,.onrender.com"
       - key: CORS_ALLOWED_ORIGINS
         value: "http://localhost:5173"
