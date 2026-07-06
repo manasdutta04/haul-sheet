@@ -528,30 +528,30 @@ function Footer({ onGetStarted }) {
   const marqueeDouble = [...MARQUEE, ...MARQUEE];
   const linkColumns = [
     {
-      title: "Product",
+      title: "Tools",
       links: [
-        { label: "Route Planner", href: "#route-planner" },
-        { label: "ELD Logs", href: "#features" },
-        { label: "Compliance", href: "#compliance" },
-        { label: "Get Started", href: "/dash" },
+        { label: "Trip Planner", href: "/dash" },
+        { label: "ELD Log Generator", href: "/dash" },
+        { label: "HOS Tracker", href: "/dash" },
+        { label: "Route Optimizer", href: "/dash" },
       ],
     },
     {
-      title: "Rules",
+      title: "Compliance",
       links: [
-        { label: "11-hr Driving", href: "#faq" },
-        { label: "14-hr Window", href: "#faq" },
-        { label: "70-hr Cycle", href: "#faq" },
-        { label: "30-min Break", href: "#faq" },
+        { label: "FMCSA 49 CFR Part 395", href: "https://www.fmcsa.dot.gov/regulations/hours-service", external: true },
+        { label: "11-Hour Driving Rule", href: "#faq" },
+        { label: "14-Hour On-Duty Limit", href: "#faq" },
+        { label: "70-Hour / 8-Day Cycle", href: "#faq" },
       ],
     },
     {
-      title: "Resources",
+      title: "Support",
       links: [
-        { label: "FMCSA Rules", href: "#faq" },
-        { label: "49 CFR 395", href: "#faq" },
-        { label: "About", href: "#faq" },
-        { label: "Support", href: "#faq" },
+        { label: "Documentation", href: "#faq" },
+        { label: "Privacy Policy", href: "#faq" },
+        { label: "Terms of Service", href: "#faq" },
+        { label: "Report an Issue", href: "#faq" },
       ],
     },
   ];
@@ -576,10 +576,10 @@ function Footer({ onGetStarted }) {
           <div>
             <p className="lp-footer-eyebrow">Get started</p>
             <h2 className="lp-footer-h2">
-              Plan your first<br />haul today.
+              Plan your next<br />haul today.
             </h2>
             <p className="lp-footer-sub">
-              Fill in three cities and your hours used. Haul Sheet routes the trip, calculates every break, and draws the log sheets for you.
+              Calculate HOS limits, plot optimal routes, and pre-plan your daily logs on our interactive map.
             </p>
           </div>
           <div className="lp-footer-btn-row">
@@ -594,11 +594,8 @@ function Footer({ onGetStarted }) {
         {/* Link columns */}
         <div className="lp-footer-links">
           <div className="lp-footer-brand-col">
-            <div className="lp-footer-brand-icon">
-              <TruckLogoLarge />
-            </div>
             <p className="lp-footer-brand-name">Haul Sheet</p>
-            <p className="lp-footer-brand-tagline">Plan the haul. Draw the log.</p>
+            <p className="lp-footer-brand-tagline">Compliant HOS planning & route logs for commercial operators.</p>
           </div>
           {linkColumns.map((col) => (
             <div key={col.title}>
@@ -606,7 +603,15 @@ function Footer({ onGetStarted }) {
               <ul className="lp-footer-col-links">
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    <a href={link.href} className="lp-footer-col-link">{link.label}</a>
+                    {link.external ? (
+                      <a href={link.href} target="_blank" rel="noopener noreferrer" className="lp-footer-col-link">
+                        {link.label} ↗
+                      </a>
+                    ) : (
+                      <a href={link.href} className="lp-footer-col-link">
+                        {link.label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -615,17 +620,13 @@ function Footer({ onGetStarted }) {
         </div>
 
         {/* Giant wordmark */}
-        <div className="lp-footer-wordmark" aria-hidden="true">
-          <p className="lp-footer-wordmark-text">Haul Sheet</p>
+        <div className="lp-footer-wordmark" aria-hidden="true" style={{ padding: "2rem 0", textAlign: "center" }}>
+          <p className="lp-footer-wordmark-text" style={{ margin: 0 }}>Haul Sheet</p>
         </div>
 
         {/* Bottom bar */}
         <div className="lp-footer-bottom">
           <p className="lp-footer-copy">© 2026 Haul Sheet. All rights reserved.</p>
-          <div className="lp-footer-badge">
-            <span className="lp-footer-badge-label">Built for</span>
-            <span className="lp-footer-badge-val">Commercial Drivers</span>
-          </div>
           <a href="#hero" className="lp-footer-top-btn" aria-label="Back to top">↑</a>
         </div>
       </div>
@@ -657,7 +658,6 @@ export default function LandingPage() {
       <header className="lp-header">
         <div className="lp-header-inner">
           <a href="#top" className="lp-brand" onClick={(e) => scrollTo(e, "hero")}>
-            <span className="lp-brand-icon"><TruckLogo size={18} /></span>
             Haul Sheet
           </a>
           <div className="lp-nav-links">
