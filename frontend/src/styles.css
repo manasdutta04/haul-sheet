@@ -151,6 +151,14 @@ button {
   gap: 6px;
 }
 
+.autocomplete-group {
+  position: relative;
+}
+
+.autocomplete-shell {
+  position: relative;
+}
+
 label {
   font-size: 12px;
   font-weight: 600;
@@ -172,6 +180,10 @@ input[type="datetime-local"] {
   transition: border-color 0.15s ease, transform 0.15s ease, background-color 0.15s ease;
 }
 
+.autocomplete-shell input {
+  width: 100%;
+}
+
 input:focus {
   outline: none;
   border-color: var(--highway-yellow);
@@ -187,6 +199,40 @@ input::placeholder {
   font-size: 11.5px;
   color: var(--text-faint);
   line-height: 1.45;
+}
+
+.autocomplete-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 20;
+  background: rgba(12, 16, 22, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 6px;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(12px);
+}
+
+.autocomplete-item {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  padding: 11px 12px;
+  border-radius: 12px;
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 0.12s ease, transform 0.12s ease;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item:focus-visible {
+  background: rgba(255, 191, 61, 0.12);
+  outline: none;
+  transform: translateX(2px);
 }
 
 .submit-btn {
@@ -504,6 +550,11 @@ footer.credits {
 @media (max-width: 640px) {
   .summary-strip {
     grid-template-columns: 1fr;
+  }
+
+  .autocomplete-menu {
+    position: static;
+    margin-top: 8px;
   }
 
   .stop-row {

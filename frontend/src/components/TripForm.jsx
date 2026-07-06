@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 const PLACE_SUGGESTIONS = [
   "Denver, CO",
@@ -32,9 +32,82 @@ const DEFAULTS = {
 
 export default function TripForm({ onSubmit, loading, error }) {
   const [form, setForm] = useState(DEFAULTS);
+  const [activeField, setActiveField] = useState(null);
 
   function update(field) {
-    return (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
+    return (e) => {
+      setForm((f) => ({ ...f, [field]: e.target.value }));
+      setActiveField(field);
+    };
+  }
+
+  function handleFocus(field) {
+    return () => setActiveField(field);
+  }
+
+  function handleBlur(field) {
+    return (e) => {
+      if (e.relatedTarget && e.currentTarget.parentElement?.contains(e.relatedTarget)) {
+        return;
+      }
+      setActiveField((current) => (current === field ? null : current));
+    };
+  }
+
+  const suggestionsFor = useMemo(() => {
+    return Object.fromEntries(
+      ["current_location", "pickup_location", "dropoff_location"].map((field) => {
+        const value = form[field].trim().toLowerCase();
+        const matches = PLACE_SUGGESTIONS.filter((place) => place.toLowerCase().includes(value)).slice(0, 6);
+        return [field, value ? matches : PLACE_SUGGESTIONS.slice(0, 6)];
+      }),
+    );
+  }, [form]);
+
+  function acceptSuggestion(field, value) {
+    setForm((f) => ({ ...f, [field]: value }));
+    setActiveField(null);
+  }
+
+  function renderAutocomplete(field, label, placeholder, hint) {
+    const suggestions = suggestionsFor[field] || [];
+    const isOpen = activeField === field && form[field].trim().length > 0 && suggestions.length > 0;
+
+    return (
+      <div className="field-group autocomplete-group">
+        <label htmlFor={field}>{label}</label>
+        <div className="autocomplete-shell">
+          <input
+            id={field}
+            type="text"
+            placeholder={placeholder}
+            value={form[field]}
+            onChange={update(field)}
+            onFocus={handleFocus(field)}
+            onBlur={handleBlur(field)}
+            autoComplete="off"
+            spellCheck="false"
+            required
+          />
+          {isOpen && (
+            <div className="autocomplete-menu" role="listbox" aria-label="Place suggestions">
+              {suggestions.map((place) => (
+                <button
+                  key={place}
+                  type="button"
+                  className="autocomplete-item"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => acceptSuggestion(field, place)}
+                >
+                  {place}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        {hint && <span className="hint">{hint}</span>}
+      </div>
+    );
   }
 
   function handleSubmit(e) {
@@ -69,52 +142,21 @@ export default function TripForm({ onSubmit, loading, error }) {
       </div>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-        <datalist id="place-suggestions">
-          {PLACE_SUGGESTIONS.map((place) => (
-            <option key={place} value={place} />
-          ))}
-        </datalist>
+        {renderAutocomplete("current_location", "Current location", "e.g. Denver, CO")}
 
-        <div className="field-group">
-          <label htmlFor="current_location">Current location</label>
-          <input
-            id="current_location"
-            type="text"
-            list="place-suggestions"
-            placeholder="e.g. Denver, CO"
-            value={form.current_location}
-            onChange={update("current_location")}
-            required
-          />
-        </div>
+        {renderAutocomplete(
+          "pickup_location",
+          "Pickup location",
+          "Start typing a place name",
+          "Use a clear place name here. Suggestions appear as you type."
+        )}
 
-        <div className="field-group">
-          <label htmlFor="pickup_location">Pickup location</label>
-          <input
-            id="pickup_location"
-            type="text"
-            list="place-suggestions"
-            placeholder="Start typing a place name"
-            value={form.pickup_location}
-            onChange={update("pickup_location")}
-            required
-          />
-          <span className="hint">Use a clear place name here. Choose a suggestion if the browser offers one.</span>
-        </div>
-
-        <div className="field-group">
-          <label htmlFor="dropoff_location">Drop-off location</label>
-          <input
-            id="dropoff_location"
-            type="text"
-            list="place-suggestions"
-            placeholder="Start typing a place name"
-            value={form.dropoff_location}
-            onChange={update("dropoff_location")}
-            required
-          />
-          <span className="hint">If multiple matches appear, pick the most specific place name you see.</span>
-        </div>
+        {renderAutocomplete(
+          "dropoff_location",
+          "Drop-off location",
+          "Start typing a place name",
+          "If multiple matches appear, pick the most specific place name you see."
+        )}
 
         <div className="field-group">
           <label htmlFor="cycle">Current cycle used (hrs)</label>
