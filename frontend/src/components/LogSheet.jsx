@@ -19,7 +19,7 @@ const GRID_WIDTH = 720;
 const TOTALS_WIDTH = 56;
 const ROW_HEIGHT = 32;
 const HEADER_HEIGHT = 34;
-const REMARKS_HEIGHT = 74;
+const REMARKS_HEIGHT = 100;
 const HOURS = 24;
 const PX_PER_HOUR = GRID_WIDTH / HOURS;
 
@@ -47,13 +47,32 @@ function splitDate(date) {
   return { year, month, day };
 }
 
+function formatLogHour(hour = 0) {
+  const totalMinutes = Math.round(Number(hour || 0) * 60);
+  const normalized = ((totalMinutes % 1440) + 1440) % 1440;
+  const h24 = Math.floor(normalized / 60);
+  const min = normalized % 60;
+  const suffix = h24 >= 12 ? "PM" : "AM";
+  const h12 = h24 % 12 || 12;
+  return `${h12}:${String(min).padStart(2, "0")} ${suffix}`;
+}
+
+function remarkType(remark) {
+  if (remark.kind === "location") return "Location";
+  if (/break/i.test(remark.text || "")) return "Break";
+  if (/rest|restart|off-duty/i.test(remark.text || "")) return "Rest";
+  if (/fuel/i.test(remark.text || "")) return "Fuel";
+  return "Event";
+}
+
 function fieldValue(value) {
   return value || "Not provided";
 }
 
 function endpointForDay({ trip, index, day }) {
-  const firstRemark = day.remarks?.[0]?.text;
-  const lastRemark = day.remarks?.[day.remarks.length - 1]?.text;
+  const locationRemarks = (day.remarks || []).filter((r) => r.kind === "location");
+  const firstRemark = locationRemarks[0]?.text;
+  const lastRemark = locationRemarks[locationRemarks.length - 1]?.text;
   const isFirst = index === 0;
   const isLast = index === (trip.totalDays || 1) - 1;
 
@@ -72,6 +91,7 @@ export default function LogSheet({ day, index, trip = {} }) {
   const { year, month, day: dayOfMonth } = splitDate(day.date);
   const dailyMiles = Math.round(day.total_miles ?? day.segments.reduce((sum, seg) => sum + (seg.miles || 0), 0));
   const endpoints = endpointForDay({ trip, index, day });
+  const visibleRemarks = (day.remarks || []).slice(0, 5);
 
   return (
     <article className="log-sheet official-log-sheet">
@@ -206,17 +226,33 @@ export default function LogSheet({ day, index, trip = {} }) {
             Remarks
           </text>
           <rect x={LEFT_MARGIN} y={remarksY} width={GRID_WIDTH} height={REMARKS_HEIGHT - 8} fill="#ffffff" stroke="#0a0a0a" strokeWidth={1} />
-          {day.remarks.slice(0, 5).map((r, i) => {
+          {visibleRemarks.map((r, i) => {
             const x = xForHour(r.hour);
             return (
               <g key={i}>
                 <line x1={x} x2={x} y1={remarksY} y2={remarksY + 10} stroke="#0a0a0a" strokeWidth={0.8} />
-                <text x={x + 4} y={remarksY + 18 + i * 10} fontSize="8.5" fontFamily="var(--font-mono)" fill="rgba(10,10,10,0.72)">
-                  {r.text}
-                </text>
               </g>
             );
           })}
+          <foreignObject x={LEFT_MARGIN + 8} y={remarksY + 14} width={GRID_WIDTH - 16} height={REMARKS_HEIGHT - 28}>
+            <div xmlns="http://www.w3.org/1999/xhtml" className="official-remarks-list">
+              {visibleRemarks.length ? (
+                visibleRemarks.map((r, i) => (
+                  <div className="official-remark-item" key={i}>
+                    <span>{formatLogHour(r.hour)}</span>
+                    <em>{remarkType(r)}</em>
+                    <strong>{r.text}</strong>
+                  </div>
+                ))
+              ) : (
+                <div className="official-remark-item">
+                  <span>--</span>
+                  <em>Note</em>
+                  <strong>No remarks for this day</strong>
+                </div>
+              )}
+            </div>
+          </foreignObject>
         </svg>
       </div>
 

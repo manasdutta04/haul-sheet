@@ -238,6 +238,8 @@ def build_daily_logs(events: list[Event]):
             remarks.append({
                 "hour": round((s.start - datetime.combine(s.start.date(), datetime.min.time())).total_seconds() / 3600.0, 2),
                 "text": text,
+                "kind": "location" if s.location else "event",
+                "status": s.status,
             })
         logs.append({
             "date": day_key,

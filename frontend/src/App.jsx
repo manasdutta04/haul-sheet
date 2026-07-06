@@ -26,19 +26,6 @@ export default function App() {
     }
   }
 
-  function handleDownloadJson() {
-    if (!result) return;
-    const blob = new Blob([JSON.stringify(result, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `haul-sheet-trip-${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-  }
-
   function handlePrintLogs() {
     window.print();
   }
@@ -106,25 +93,6 @@ export default function App() {
 
           {result && (
             <div className="result-report">
-              <section className="result-hero">
-                <div>
-                  <p className="result-eyebrow">Generated trip plan</p>
-                  <h1>Route, stops, and ELD logs are ready.</h1>
-                </div>
-                <div className="result-actions">
-                  <div className="result-status-pill">
-                    <span className="status-dot" />
-                    HOS schedule built
-                  </div>
-                  <button className="result-action-btn" type="button" onClick={handlePrintLogs}>
-                    Print / PDF
-                  </button>
-                  <button className="result-action-btn result-action-btn-dark" type="button" onClick={handleDownloadJson}>
-                    Download data
-                  </button>
-                </div>
-              </section>
-
               <div className="summary-strip">
                 <div className="summary-cell summary-cell-primary">
                   <div className="value">{result.summary.total_distance_miles}</div>
@@ -162,26 +130,23 @@ export default function App() {
                 </section>
               </div>
 
-              <section className="rules-panel">
-                <div>
-                  <p className="rules-eyebrow">Planning assumptions</p>
-                  <h2>FMCSA property-carrying HOS rules applied</h2>
-                </div>
-                <div className="rules-grid">
-                  <span>11-hour driving limit</span>
-                  <span>14-hour duty window</span>
-                  <span>30-minute break after 8 driving hours</span>
-                  <span>10-hour off-duty reset</span>
-                  <span>70-hour / 8-day cycle</span>
-                  <span>Fuel stop every 1,000 miles</span>
-                  <span>1 hour pickup</span>
-                  <span>1 hour drop-off</span>
-                </div>
-              </section>
-
               <section className="result-panel result-panel-logs">
-                <div className="section-title">
-                  Daily log sheets
+                <div className="section-title log-section-title">
+                  <span>Daily log sheets</span>
+                  <div className="rules-info">
+                    <button type="button" aria-label="Show planning assumptions">i</button>
+                    <div className="rules-info-panel">
+                      <strong>Planning assumptions</strong>
+                      <span>Property-carrying driver</span>
+                      <span>11-hour driving limit</span>
+                      <span>14-hour duty window</span>
+                      <span>30-minute break after 8 driving hours</span>
+                      <span>10-hour off-duty reset</span>
+                      <span>70-hour / 8-day cycle</span>
+                      <span>Fuel stop every 1,000 miles</span>
+                      <span>1 hour pickup and 1 hour drop-off</span>
+                    </div>
+                  </div>
                   <div className="rule" />
                 </div>
                 {result.daily_logs.map((day, i) => (
@@ -198,6 +163,12 @@ export default function App() {
                   />
                 ))}
               </section>
+
+              <div className="bottom-download-bar">
+                <button className="result-action-btn result-action-btn-dark" type="button" onClick={handlePrintLogs}>
+                  Download PDF
+                </button>
+              </div>
 
               <footer className="credits">
                 Route data &copy; OpenStreetMap contributors, via OSRM. Planning assumptions:
