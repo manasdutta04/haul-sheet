@@ -60,7 +60,7 @@ export default function LogSheet({ day, index }) {
             x2={xForHour(h)}
             y1={HEADER_HEIGHT}
             y2={HEADER_HEIGHT + gridHeight}
-            stroke={h % 6 === 0 ? "#3a4453" : "#262e38"}
+            stroke={h % 6 === 0 ? "rgba(10,10,10,0.18)" : "rgba(10,10,10,0.10)"}
             strokeWidth={h % 6 === 0 ? 1.2 : 0.6}
           />
         ))}
@@ -75,7 +75,7 @@ export default function LogSheet({ day, index }) {
               x2={xForHour(h)}
               y1={HEADER_HEIGHT}
               y2={HEADER_HEIGHT + gridHeight}
-              stroke="#1e2530"
+              stroke="rgba(10,10,10,0.06)"
               strokeWidth={0.4}
             />
           );
@@ -89,7 +89,7 @@ export default function LogSheet({ day, index }) {
               x2={LEFT_MARGIN + GRID_WIDTH}
               y1={yForRow(idx)}
               y2={yForRow(idx)}
-              stroke="#2a323d"
+              stroke="rgba(10,10,10,0.14)"
               strokeWidth={1}
             />
             <text
@@ -109,7 +109,7 @@ export default function LogSheet({ day, index }) {
           x2={LEFT_MARGIN + GRID_WIDTH}
           y1={yForRow(ROW_ORDER.length)}
           y2={yForRow(ROW_ORDER.length)}
-          stroke="#2a323d"
+          stroke="rgba(10,10,10,0.14)"
           strokeWidth={1}
         />
 
