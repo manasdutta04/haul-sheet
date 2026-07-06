@@ -1,5 +1,28 @@
 import React, { useState } from "react";
 
+const PLACE_SUGGESTIONS = [
+  "Denver, CO",
+  "Aurora, CO",
+  "Kansas City, MO",
+  "Chicago, IL",
+  "St. Louis, MO",
+  "Omaha, NE",
+  "Dallas, TX",
+  "Houston, TX",
+  "Phoenix, AZ",
+  "Los Angeles, CA",
+  "Seattle, WA",
+  "Salt Lake City, UT",
+  "Atlanta, GA",
+  "Nashville, TN",
+  "Indianapolis, IN",
+  "Memphis, TN",
+  "Charlotte, NC",
+  "Raleigh, NC",
+  "Albuquerque, NM",
+  "Birmingham, AL",
+];
+
 const DEFAULTS = {
   current_location: "",
   pickup_location: "",
@@ -26,6 +49,7 @@ export default function TripForm({ onSubmit, loading, error }) {
 
   return (
     <aside className="sidebar">
+      <div className="sidebar-glow" aria-hidden="true" />
       <div className="brand">
         <svg className="brand-mark" viewBox="0 0 34 34" fill="none">
           <rect width="34" height="34" rx="7" fill="#f2b705" />
@@ -40,12 +64,23 @@ export default function TripForm({ onSubmit, loading, error }) {
         </div>
       </div>
 
+      <div className="sidebar-note">
+        Build with city names, ZIPs, airports, or landmarks. Pick a suggestion in pickup and drop-off to keep geocoding clean.
+      </div>
+
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        <datalist id="place-suggestions">
+          {PLACE_SUGGESTIONS.map((place) => (
+            <option key={place} value={place} />
+          ))}
+        </datalist>
+
         <div className="field-group">
           <label htmlFor="current_location">Current location</label>
           <input
             id="current_location"
             type="text"
+            list="place-suggestions"
             placeholder="e.g. Denver, CO"
             value={form.current_location}
             onChange={update("current_location")}
@@ -58,11 +93,13 @@ export default function TripForm({ onSubmit, loading, error }) {
           <input
             id="pickup_location"
             type="text"
-            placeholder="e.g. Kansas City, MO"
+            list="place-suggestions"
+            placeholder="Start typing a place name"
             value={form.pickup_location}
             onChange={update("pickup_location")}
             required
           />
+          <span className="hint">Use a clear place name here. Choose a suggestion if the browser offers one.</span>
         </div>
 
         <div className="field-group">
@@ -70,11 +107,13 @@ export default function TripForm({ onSubmit, loading, error }) {
           <input
             id="dropoff_location"
             type="text"
-            placeholder="e.g. Chicago, IL"
+            list="place-suggestions"
+            placeholder="Start typing a place name"
             value={form.dropoff_location}
             onChange={update("dropoff_location")}
             required
           />
+          <span className="hint">If multiple matches appear, pick the most specific place name you see.</span>
         </div>
 
         <div className="field-group">
