@@ -228,15 +228,22 @@ def build_daily_logs(events: list[Event]):
                 "location": s.location,
                 "miles": round(s.miles, 1),
             })
-        remarks = [
-            {"hour": round((s.start - datetime.combine(s.start.date(), datetime.min.time())).total_seconds() / 3600.0, 2),
-             "text": s.location or s.label}
-            for s in segs if s.location
-        ]
+        remarks = []
+        for s in segs:
+            if s.status == STATUS_DRIVING:
+                continue
+            text = s.location or s.label
+            if not text:
+                continue
+            remarks.append({
+                "hour": round((s.start - datetime.combine(s.start.date(), datetime.min.time())).total_seconds() / 3600.0, 2),
+                "text": text,
+            })
         logs.append({
             "date": day_key,
             "segments": grid_segments,
             "totals": {k: round(v, 2) for k, v in totals.items()},
+            "total_miles": round(sum(s.miles for s in segs if s.status == STATUS_DRIVING), 1),
             "remarks": remarks,
         })
     return logs

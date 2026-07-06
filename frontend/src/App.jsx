@@ -26,6 +26,23 @@ export default function App() {
     }
   }
 
+  function handleDownloadJson() {
+    if (!result) return;
+    const blob = new Blob([JSON.stringify(result, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `haul-sheet-trip-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function handlePrintLogs() {
+    window.print();
+  }
+
   return (
     <div className="app-shell-page">
       <header className="dash-header">
@@ -89,7 +106,24 @@ export default function App() {
 
           {result && (
             <div className="result-report">
-              
+              <section className="result-hero">
+                <div>
+                  <p className="result-eyebrow">Generated trip plan</p>
+                  <h1>Route, stops, and ELD logs are ready.</h1>
+                </div>
+                <div className="result-actions">
+                  <div className="result-status-pill">
+                    <span className="status-dot" />
+                    HOS schedule built
+                  </div>
+                  <button className="result-action-btn" type="button" onClick={handlePrintLogs}>
+                    Print / PDF
+                  </button>
+                  <button className="result-action-btn result-action-btn-dark" type="button" onClick={handleDownloadJson}>
+                    Download data
+                  </button>
+                </div>
+              </section>
 
               <div className="summary-strip">
                 <div className="summary-cell summary-cell-primary">
@@ -151,7 +185,17 @@ export default function App() {
                   <div className="rule" />
                 </div>
                 {result.daily_logs.map((day, i) => (
-                  <LogSheet day={day} index={i} key={day.date} />
+                  <LogSheet
+                    day={day}
+                    index={i}
+                    key={day.date}
+                    trip={{
+                      current: result.route.markers.current?.label,
+                      pickup: result.route.markers.pickup?.label,
+                      dropoff: result.route.markers.dropoff?.label,
+                      totalDays: result.daily_logs.length,
+                    }}
+                  />
                 ))}
               </section>
 

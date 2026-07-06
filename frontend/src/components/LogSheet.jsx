@@ -47,13 +47,31 @@ function splitDate(date) {
   return { year, month, day };
 }
 
-export default function LogSheet({ day, index }) {
+function fieldValue(value) {
+  return value || "Not provided";
+}
+
+function endpointForDay({ trip, index, day }) {
+  const firstRemark = day.remarks?.[0]?.text;
+  const lastRemark = day.remarks?.[day.remarks.length - 1]?.text;
+  const isFirst = index === 0;
+  const isLast = index === (trip.totalDays || 1) - 1;
+
+  return {
+    from: isFirst ? trip.current : firstRemark || "En route",
+    to: isLast ? trip.dropoff : lastRemark || trip.dropoff || "En route",
+  };
+}
+
+export default function LogSheet({ day, index, trip = {} }) {
   const gridHeight = ROW_HEIGHT * ROW_ORDER.length;
   const remarksY = HEADER_HEIGHT + gridHeight + 24;
   const svgHeight = remarksY + REMARKS_HEIGHT;
   const svgWidth = LEFT_MARGIN + GRID_WIDTH + TOTALS_WIDTH + 18;
   const totalsX = LEFT_MARGIN + GRID_WIDTH + 12;
   const { year, month, day: dayOfMonth } = splitDate(day.date);
+  const dailyMiles = Math.round(day.total_miles ?? day.segments.reduce((sum, seg) => sum + (seg.miles || 0), 0));
+  const endpoints = endpointForDay({ trip, index, day });
 
   return (
     <article className="log-sheet official-log-sheet">
@@ -79,27 +97,35 @@ export default function LogSheet({ day, index }) {
       <div className="official-log-fields">
         <label>
           <span>From</span>
-          <i />
+          <b>{fieldValue(endpoints.from)}</b>
         </label>
         <label>
           <span>To</span>
-          <i />
+          <b>{fieldValue(endpoints.to)}</b>
         </label>
         <label>
           <span>Total Miles Driving Today</span>
-          <b>{Math.round(day.segments.reduce((sum, seg) => sum + (seg.miles || 0), 0)) || ""}</b>
+          <b>{dailyMiles}</b>
         </label>
         <label>
           <span>Name of Carrier or Carriers</span>
-          <i />
+          <b>Haul Sheet Planning Record</b>
         </label>
         <label>
           <span>Truck/Tractor and Trailer Numbers or License Plate(s)</span>
-          <i />
+          <b>Not provided</b>
         </label>
         <label>
           <span>Main Office Address</span>
-          <i />
+          <b>Not provided</b>
+        </label>
+        <label>
+          <span>Home Terminal Address</span>
+          <b>Not provided</b>
+        </label>
+        <label>
+          <span>Trip Route</span>
+          <b>{fieldValue(trip.current)} - {fieldValue(trip.pickup)} - {fieldValue(trip.dropoff)}</b>
         </label>
       </div>
 
