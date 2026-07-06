@@ -4,13 +4,26 @@ Kept intentionally simple/single-file for an assessment project.
 """
 import os
 from pathlib import Path
+from urllib.parse import urlparse
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-insecure-secret-key-change-me")
 DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
+def _allowed_host(value):
+    value = value.strip()
+    if not value:
+        return None
+    parsed = urlparse(value if "://" in value else f"//{value}")
+    return parsed.hostname or value
+
+
+ALLOWED_HOSTS = [
+    host
+    for host in (_allowed_host(item) for item in os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(","))
+    if host
+]
 
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
