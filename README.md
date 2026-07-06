@@ -202,36 +202,6 @@ Current verification:
 - Render health endpoint works when deployed with the documented environment variables.
 - Vercel frontend works when `VITE_API_BASE_URL` points to the Render backend.
 
-## Deployment
-
-This project is designed for:
-
-- Render for the Django API
-- Vercel for the React frontend
-
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment steps.
-
-## Submission
-
-For the hiring assessment, submit:
-
-- GitHub repository link
-- Vercel hosted app link
-- Loom video link, 3-5 minutes
-
-See [SUBMISSION_CHECKLIST.md](SUBMISSION_CHECKLIST.md) before submitting.
-
-## Limitations
-
-This app is a planning and assessment project, not a certified ELD or legal compliance system.
-
-Known simplifications:
-
-- No sleeper berth split rules
-- No adverse driving conditions exception
-- No timezone/home-terminal conversion
-- Public OSRM and Nominatim services can rate-limit or temporarily fail
-- Carrier, tractor, trailer, and office information are not collected from the assessment inputs
 
 ## License
 
