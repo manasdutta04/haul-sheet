@@ -1,6 +1,22 @@
 /* ─── Landing page reset & tokens ─────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;1,9..144,400&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap');
 
+/* ─── Map & Route Graphics Animations ────────────────────────────────────── */
+@keyframes lp-ping {
+  0% { r: 4px; opacity: 0.8; }
+  100% { r: 12px; opacity: 0; }
+}
+@keyframes lp-dash {
+  to { stroke-dashoffset: -20; }
+}
+.lp-ping-anim {
+  animation: lp-ping 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  transform-origin: center;
+}
+.lp-route-dash {
+  animation: lp-dash 1.5s linear infinite;
+}
+
 /* Scope all landing page styles so they don't leak into /dash */
 .landing-root {
   --lp-bg: #ffffff;
