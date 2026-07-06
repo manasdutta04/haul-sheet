@@ -2,10 +2,10 @@ import React from "react";
 
 const ROW_ORDER = ["OFF_DUTY", "SLEEPER_BERTH", "DRIVING", "ON_DUTY_NOT_DRIVING"];
 const ROW_LABELS = {
-  OFF_DUTY: "Off Duty",
-  SLEEPER_BERTH: "Sleeper Berth",
-  DRIVING: "Driving",
-  ON_DUTY_NOT_DRIVING: "On Duty (Not Driving)",
+  OFF_DUTY: "1. Off Duty",
+  SLEEPER_BERTH: "2. Sleeper Berth",
+  DRIVING: "3. Driving",
+  ON_DUTY_NOT_DRIVING: "4. On Duty (Not Driving)",
 };
 const ROW_COLORS = {
   OFF_DUTY: "var(--off-duty)",
@@ -14,11 +14,12 @@ const ROW_COLORS = {
   ON_DUTY_NOT_DRIVING: "var(--on-duty)",
 };
 
-const LEFT_MARGIN = 128;
-const GRID_WIDTH = 648; // 27px per hour * 24
-const ROW_HEIGHT = 34;
-const HEADER_HEIGHT = 22;
-const REMARKS_HEIGHT = 46;
+const LEFT_MARGIN = 118;
+const GRID_WIDTH = 720;
+const TOTALS_WIDTH = 56;
+const ROW_HEIGHT = 32;
+const HEADER_HEIGHT = 34;
+const REMARKS_HEIGHT = 74;
 const HOURS = 24;
 const PX_PER_HOUR = GRID_WIDTH / HOURS;
 
@@ -31,164 +32,182 @@ function yForRow(idx) {
 }
 
 function hourLabel(h) {
-  if (h === 0 || h === 24) return "Mid";
+  if (h === 0 || h === 24) return "Mid- night";
   if (h === 12) return "Noon";
   const twelveHr = h > 12 ? h - 12 : h;
   return String(twelveHr);
 }
 
+function fmtHours(value = 0) {
+  return Number(value || 0).toFixed(2);
+}
+
+function splitDate(date) {
+  const [year = "", month = "", day = ""] = String(date || "").split("-");
+  return { year, month, day };
+}
+
 export default function LogSheet({ day, index }) {
   const gridHeight = ROW_HEIGHT * ROW_ORDER.length;
-  const svgHeight = HEADER_HEIGHT + gridHeight + REMARKS_HEIGHT + 10;
-  const svgWidth = LEFT_MARGIN + GRID_WIDTH + 90;
-
-  const segments = day.segments;
+  const remarksY = HEADER_HEIGHT + gridHeight + 24;
+  const svgHeight = remarksY + REMARKS_HEIGHT;
+  const svgWidth = LEFT_MARGIN + GRID_WIDTH + TOTALS_WIDTH + 18;
+  const totalsX = LEFT_MARGIN + GRID_WIDTH + 12;
+  const { year, month, day: dayOfMonth } = splitDate(day.date);
 
   return (
-    <div className="log-sheet">
-      <div className="log-sheet-header">
-        <div className="date">{day.date}</div>
-        <div className="day-index">Day {index + 1}</div>
+    <article className="log-sheet official-log-sheet">
+      <div className="official-log-top">
+        <div>
+          <h3>Driver's Daily Log</h3>
+          <div className="official-log-date">
+            <span>{month || "mm"}</span>
+            <small>month</small>
+            <span>{dayOfMonth || "dd"}</span>
+            <small>day</small>
+            <span>{year || "yyyy"}</span>
+            <small>year</small>
+          </div>
+        </div>
+        <div className="official-log-origin">
+          <strong>Original</strong> - File at home terminal.
+          <br />
+          <strong>Duplicate</strong> - Driver retains in possession for 8 days.
+        </div>
       </div>
 
-      <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} width="100%" height={svgHeight} role="img" aria-label={`Daily log grid for ${day.date}`}>
-        {/* Hour gridlines */}
-        {Array.from({ length: HOURS + 1 }).map((_, h) => (
-          <line
-            key={`v-${h}`}
-            x1={xForHour(h)}
-            x2={xForHour(h)}
-            y1={HEADER_HEIGHT}
-            y2={HEADER_HEIGHT + gridHeight}
-            stroke={h % 6 === 0 ? "rgba(10,10,10,0.18)" : "rgba(10,10,10,0.10)"}
-            strokeWidth={h % 6 === 0 ? 1.2 : 0.6}
-          />
-        ))}
-        {/* quarter-hour ticks */}
-        {Array.from({ length: HOURS * 4 + 1 }).map((_, q) => {
-          if (q % 4 === 0) return null;
-          const h = q / 4;
-          return (
+      <div className="official-log-fields">
+        <label>
+          <span>From</span>
+          <i />
+        </label>
+        <label>
+          <span>To</span>
+          <i />
+        </label>
+        <label>
+          <span>Total Miles Driving Today</span>
+          <b>{Math.round(day.segments.reduce((sum, seg) => sum + (seg.miles || 0), 0)) || ""}</b>
+        </label>
+        <label>
+          <span>Name of Carrier or Carriers</span>
+          <i />
+        </label>
+        <label>
+          <span>Truck/Tractor and Trailer Numbers or License Plate(s)</span>
+          <i />
+        </label>
+        <label>
+          <span>Main Office Address</span>
+          <i />
+        </label>
+      </div>
+
+      <div className="official-log-grid-wrap">
+        <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} width="100%" height="100%" role="img" aria-label={`Daily log grid for ${day.date}`}>
+          <rect x={LEFT_MARGIN} y={HEADER_HEIGHT - 22} width={GRID_WIDTH} height={22} fill="#0a0a0a" />
+          {Array.from({ length: HOURS + 1 }).map((_, h) => (
+            <text key={`hl-${h}`} x={xForHour(h)} y={HEADER_HEIGHT - 7} textAnchor="middle" fontSize="8.5" fontFamily="var(--font-mono)" fill="#ffffff">
+              {hourLabel(h)}
+            </text>
+          ))}
+          <text x={totalsX + 20} y={HEADER_HEIGHT - 12} textAnchor="middle" fontSize="8" fontFamily="var(--font-mono)" fill="#0a0a0a">
+            Total
+          </text>
+
+          {Array.from({ length: HOURS + 1 }).map((_, h) => (
             <line
-              key={`q-${q}`}
+              key={`v-${h}`}
               x1={xForHour(h)}
               x2={xForHour(h)}
               y1={HEADER_HEIGHT}
               y2={HEADER_HEIGHT + gridHeight}
-              stroke="rgba(10,10,10,0.06)"
-              strokeWidth={0.4}
+              stroke={h % 6 === 0 ? "rgba(10,10,10,0.38)" : "rgba(10,10,10,0.18)"}
+              strokeWidth={h % 6 === 0 ? 1.2 : 0.7}
             />
-          );
-        })}
-
-        {/* Row separators + labels */}
-        {ROW_ORDER.map((status, idx) => (
-          <g key={status}>
-            <line
-              x1={LEFT_MARGIN}
-              x2={LEFT_MARGIN + GRID_WIDTH}
-              y1={yForRow(idx)}
-              y2={yForRow(idx)}
-              stroke="rgba(10,10,10,0.14)"
-              strokeWidth={1}
-            />
-            <text
-              x={LEFT_MARGIN - 10}
-              y={yForRow(idx) + ROW_HEIGHT / 2 + 4}
-              textAnchor="end"
-              fontSize="10.5"
-              fontFamily="var(--font-mono)"
-              fill="var(--text-muted)"
-            >
-              {ROW_LABELS[status]}
-            </text>
-          </g>
-        ))}
-        <line
-          x1={LEFT_MARGIN}
-          x2={LEFT_MARGIN + GRID_WIDTH}
-          y1={yForRow(ROW_ORDER.length)}
-          y2={yForRow(ROW_ORDER.length)}
-          stroke="rgba(10,10,10,0.14)"
-          strokeWidth={1}
-        />
-
-        {/* Hour labels along top */}
-        {Array.from({ length: HOURS + 1 }).map((_, h) => (
-          <text
-            key={`hl-${h}`}
-            x={xForHour(h)}
-            y={HEADER_HEIGHT - 8}
-            textAnchor="middle"
-            fontSize="9"
-            fontFamily="var(--font-mono)"
-            fill="var(--text-faint)"
-          >
-            {hourLabel(h)}
-          </text>
-        ))}
-
-        {/* Duty status trace: horizontal segments + vertical connectors */}
-        {segments.map((seg, i) => {
-          const rowIdx = ROW_ORDER.indexOf(seg.status);
-          const y = yForRow(rowIdx) + ROW_HEIGHT / 2;
-          const x1 = xForHour(seg.start_hour);
-          const x2 = xForHour(seg.end_hour);
-          const prev = segments[i - 1];
-          const connectors = [];
-          if (prev) {
-            const prevRowIdx = ROW_ORDER.indexOf(prev.status);
-            const prevY = yForRow(prevRowIdx) + ROW_HEIGHT / 2;
-            connectors.push(
+          ))}
+          {Array.from({ length: HOURS * 4 + 1 }).map((_, q) => {
+            if (q % 4 === 0) return null;
+            const h = q / 4;
+            return (
               <line
-                key={`conn-${i}`}
-                x1={x1}
-                x2={x1}
-                y1={prevY}
-                y2={y}
-                stroke={ROW_COLORS[seg.status]}
-                strokeWidth={2}
+                key={`q-${q}`}
+                x1={xForHour(h)}
+                x2={xForHour(h)}
+                y1={HEADER_HEIGHT}
+                y2={HEADER_HEIGHT + gridHeight}
+                stroke="rgba(10,10,10,0.12)"
+                strokeWidth={0.45}
               />
             );
-          }
-          return (
-            <g key={i}>
-              {connectors}
-              <line x1={x1} x2={x2} y1={y} y2={y} stroke={ROW_COLORS[seg.status]} strokeWidth={3} strokeLinecap="round" />
-            </g>
-          );
-        })}
+          })}
 
-        {/* Remarks: location tick marks + rotated labels */}
-        {day.remarks.map((r, i) => {
-          const x = xForHour(r.hour);
-          const y0 = HEADER_HEIGHT + gridHeight;
-          return (
-            <g key={i}>
-              <line x1={x} x2={x} y1={y0} y2={y0 + 8} stroke="var(--text-faint)" strokeWidth={0.8} />
-              <text
-                x={x}
-                y={y0 + 12}
-                fontSize="8.5"
-                fontFamily="var(--font-mono)"
-                fill="var(--text-muted)"
-                transform={`rotate(35 ${x} ${y0 + 12})`}
-              >
-                {r.text}
+          {ROW_ORDER.map((status, idx) => (
+            <g key={status}>
+              <line x1={LEFT_MARGIN} x2={LEFT_MARGIN + GRID_WIDTH} y1={yForRow(idx)} y2={yForRow(idx)} stroke="#0a0a0a" strokeWidth={1} />
+              <text x={LEFT_MARGIN - 10} y={yForRow(idx) + ROW_HEIGHT / 2 + 4} textAnchor="end" fontSize="10" fontFamily="var(--font-mono)" fill="#0a0a0a">
+                {ROW_LABELS[status]}
+              </text>
+              <line x1={totalsX} x2={totalsX + 36} y1={yForRow(idx) + ROW_HEIGHT / 2} y2={yForRow(idx) + ROW_HEIGHT / 2} stroke="#0a0a0a" strokeWidth={0.8} />
+              <text x={totalsX + 18} y={yForRow(idx) + ROW_HEIGHT / 2 - 3} textAnchor="middle" fontSize="8.5" fontFamily="var(--font-mono)" fill="rgba(10,10,10,0.62)">
+                {fmtHours(day.totals[status])}
               </text>
             </g>
-          );
-        })}
-      </svg>
+          ))}
+          <line x1={LEFT_MARGIN} x2={LEFT_MARGIN + GRID_WIDTH} y1={yForRow(ROW_ORDER.length)} y2={yForRow(ROW_ORDER.length)} stroke="#0a0a0a" strokeWidth={1} />
 
-      <div className="log-totals">
-        {ROW_ORDER.map((status) => (
-          <div className="log-total-item" key={status}>
-            <span className="swatch" style={{ background: ROW_COLORS[status] }} />
-            {ROW_LABELS[status]}: {day.totals[status].toFixed(2)}h
-          </div>
-        ))}
+          {day.segments.map((seg, i) => {
+            const rowIdx = ROW_ORDER.indexOf(seg.status);
+            const y = yForRow(rowIdx) + ROW_HEIGHT / 2;
+            const x1 = xForHour(seg.start_hour);
+            const x2 = xForHour(seg.end_hour);
+            const prev = day.segments[i - 1];
+            const connectors = [];
+            if (prev) {
+              const prevRowIdx = ROW_ORDER.indexOf(prev.status);
+              const prevY = yForRow(prevRowIdx) + ROW_HEIGHT / 2;
+              connectors.push(<line key={`conn-${i}`} x1={x1} x2={x1} y1={prevY} y2={y} stroke="#0a0a0a" strokeWidth={2} />);
+            }
+            return (
+              <g key={i}>
+                {connectors}
+                <line x1={x1} x2={x2} y1={y} y2={y} stroke={ROW_COLORS[seg.status]} strokeWidth={4} strokeLinecap="round" />
+              </g>
+            );
+          })}
+
+          <text x={6} y={remarksY + 14} fontSize="11" fontFamily="var(--font-mono)" fontWeight="700" fill="#0a0a0a">
+            Remarks
+          </text>
+          <rect x={LEFT_MARGIN} y={remarksY} width={GRID_WIDTH} height={REMARKS_HEIGHT - 8} fill="#ffffff" stroke="#0a0a0a" strokeWidth={1} />
+          {day.remarks.slice(0, 5).map((r, i) => {
+            const x = xForHour(r.hour);
+            return (
+              <g key={i}>
+                <line x1={x} x2={x} y1={remarksY} y2={remarksY + 10} stroke="#0a0a0a" strokeWidth={0.8} />
+                <text x={x + 4} y={remarksY + 18 + i * 10} fontSize="8.5" fontFamily="var(--font-mono)" fill="rgba(10,10,10,0.72)">
+                  {r.text}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
       </div>
-    </div>
+
+      <div className="official-log-footer">
+        <div>
+          <strong>Recap</strong>
+          <span>70-hour / 8-day property-carrying cycle</span>
+        </div>
+        <div>
+          <strong>Total Hours</strong>
+          <span>{fmtHours(Object.values(day.totals).reduce((a, b) => a + b, 0))}</span>
+        </div>
+        <div>
+          <strong>Driver Signature</strong>
+          <i />
+        </div>
+      </div>
+    </article>
   );
 }

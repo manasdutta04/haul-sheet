@@ -128,6 +128,23 @@ export default function App() {
                 </section>
               </div>
 
+              <section className="rules-panel">
+                <div>
+                  <p className="rules-eyebrow">Planning assumptions</p>
+                  <h2>FMCSA property-carrying HOS rules applied</h2>
+                </div>
+                <div className="rules-grid">
+                  <span>11-hour driving limit</span>
+                  <span>14-hour duty window</span>
+                  <span>30-minute break after 8 driving hours</span>
+                  <span>10-hour off-duty reset</span>
+                  <span>70-hour / 8-day cycle</span>
+                  <span>Fuel stop every 1,000 miles</span>
+                  <span>1 hour pickup</span>
+                  <span>1 hour drop-off</span>
+                </div>
+              </section>
+
               <section className="result-panel result-panel-logs">
                 <div className="section-title">
                   Daily log sheets

@@ -199,8 +199,10 @@ def split_events_by_day(events: list[Event]):
             day_key = cursor.date().isoformat()
             next_midnight = datetime.combine(cursor.date() + timedelta(days=1), datetime.min.time())
             segment_end = min(ev.end, next_midnight)
+            segment_hours = (segment_end - cursor).total_seconds() / 3600.0
+            segment_miles = (ev.miles * segment_hours / ev.hours) if ev.hours > 1e-6 else 0.0
             days.setdefault(day_key, []).append(
-                Event(ev.status, cursor, segment_end, ev.label, ev.location, 0.0)
+                Event(ev.status, cursor, segment_end, ev.label, ev.location, segment_miles)
             )
             cursor = segment_end
     return days
@@ -224,6 +226,7 @@ def build_daily_logs(events: list[Event]):
                 "end_hour": round(end_hr, 3),
                 "label": s.label,
                 "location": s.location,
+                "miles": round(s.miles, 1),
             })
         remarks = [
             {"hour": round((s.start - datetime.combine(s.start.date(), datetime.min.time())).total_seconds() / 3600.0, 2),
