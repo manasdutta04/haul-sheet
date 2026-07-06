@@ -88,9 +88,11 @@ export default function App() {
           )}
 
           {result && (
-            <>
+            <div className="result-report">
+              
+
               <div className="summary-strip">
-                <div className="summary-cell">
+                <div className="summary-cell summary-cell-primary">
                   <div className="value">{result.summary.total_distance_miles}</div>
                   <div className="label">Miles</div>
                 </div>
@@ -99,34 +101,42 @@ export default function App() {
                   <div className="label">Driving hrs</div>
                 </div>
                 <div className="summary-cell">
-                  <div className="value">{result.summary.num_days}</div>
-                  <div className="label">Log sheet{result.summary.num_days === 1 ? "" : "s"}</div>
-                </div>
-                <div className="summary-cell">
                   <div className="value">{Math.round(result.summary.total_trip_duration_hours)}</div>
                   <div className="label">Total hrs elapsed</div>
                 </div>
+                <div className="summary-cell">
+                  <div className="value">{result.summary.num_days}</div>
+                  <div className="label">Log sheet{result.summary.num_days === 1 ? "" : "s"}</div>
+                </div>
               </div>
 
-              <div className="section-title">
-                Route
-                <div className="rule" />
-              </div>
-              <RouteMap route={result.route} stops={result.stops} />
+              <div className="result-grid">
+                <section className="result-panel result-panel-map">
+                  <div className="section-title">
+                    Route
+                    <div className="rule" />
+                  </div>
+                  <RouteMap route={result.route} stops={result.stops} />
+                </section>
 
-              <div className="section-title">
-                Stops &amp; rest schedule
-                <div className="rule" />
+                <section className="result-panel result-panel-stops">
+                  <div className="section-title">
+                    Stops &amp; rest schedule
+                    <div className="rule" />
+                  </div>
+                  <StopsList stops={result.stops} />
+                </section>
               </div>
-              <StopsList stops={result.stops} />
 
-              <div className="section-title">
-                Daily log sheets
-                <div className="rule" />
-              </div>
-              {result.daily_logs.map((day, i) => (
-                <LogSheet day={day} index={i} key={day.date} />
-              ))}
+              <section className="result-panel result-panel-logs">
+                <div className="section-title">
+                  Daily log sheets
+                  <div className="rule" />
+                </div>
+                {result.daily_logs.map((day, i) => (
+                  <LogSheet day={day} index={i} key={day.date} />
+                ))}
+              </section>
 
               <footer className="credits">
                 Route data &copy; OpenStreetMap contributors, via OSRM. Planning assumptions:
@@ -134,7 +144,7 @@ export default function App() {
                 fuel stop every 1,000 mi, 1 hr each for pickup and drop-off. This tool is a
                 planning aid, not a certified compliance record.
               </footer>
-            </>
+            </div>
           )}
         </main>
       </div>

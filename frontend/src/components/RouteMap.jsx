@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip } from "react-leaflet";
+import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip, useMap } from "react-leaflet";
 
 const STOP_COLORS = {
   pickup: "#2f9e6e",
@@ -19,12 +19,34 @@ function boundsFromGeometry(geometry) {
   ];
 }
 
+function RecenterButton({ bounds }) {
+  const map = useMap();
+
+  function handleClick() {
+    map.fitBounds(bounds, { padding: [30, 30] });
+  }
+
+  return (
+    <button className="map-focus-btn" type="button" onClick={handleClick} aria-label="Focus map on route locations" title="Focus route">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <path d="M12 19v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <path d="M2 12h3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <path d="M19 12h3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="2" />
+        <circle cx="12" cy="12" r="2" fill="currentColor" />
+      </svg>
+    </button>
+  );
+}
+
 export default function RouteMap({ route, stops }) {
   const bounds = useMemo(() => boundsFromGeometry(route.geometry), [route]);
 
   return (
     <div className="map-wrap">
       <MapContainer bounds={bounds} boundsOptions={{ padding: [30, 30] }} style={{ height: "100%", width: "100%" }} scrollWheelZoom={true}>
+        <RecenterButton bounds={bounds} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
